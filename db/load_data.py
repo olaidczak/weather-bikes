@@ -2,10 +2,10 @@ import os
 from dotenv import load_dotenv
 import psycopg2
 import psycopg2.extras
-
-load_dotenv()
 from get_bike_data import get_and_transform_bike_data
 from get_weather_data import get_weather_data
+
+load_dotenv()
 
 
 def load_data():
@@ -32,15 +32,6 @@ def load_data():
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
 
-        # insert_bike_stations_status = """
-        # INSERT INTO bike_stations_status (
-        #     station_id,
-        #     timestamp,
-        #     free_bikes,
-        #     empty_slots
-        # ) VALUES (%s, %s, %s, %s);
-        # """
-
         insert_bike_stations_status = """
         INSERT INTO bike_stations_status (
             station_id,
@@ -49,17 +40,6 @@ def load_data():
             empty_slots
         ) VALUES %s;
         """
-
-        # insert_bike_stations = """
-        # INSERT INTO bike_stations (
-        #     id,
-        #     name,
-        #     lat,
-        #     lon,
-        #     slots
-        # ) VALUES (%s, %s, %s, %s, %s)
-        # ON CONFLICT (id) DO NOTHING;
-        # """
 
         insert_bike_stations = """
         INSERT INTO bike_stations (
@@ -91,32 +71,19 @@ def load_data():
         )
 
         bike_data = get_and_transform_bike_data()
-        # bike_stations_data_to_insert = (
-        #     bike_data["id"],
-        #     bike_data["name"],
-        #     bike_data["lat"],
-        #     bike_data["lon"],
-        #     bike_data["slots"],
-        # )
+
         bike_stations_data_to_insert = list(
             bike_data[["id", "name", "lat", "lon", "slots"]].itertuples(
                 index=False, name=None
             )
         )
 
-        # bike_stations_status_data_to_insert = (
-        #     bike_data["timestamp"],
-        #     bike_data["id"],
-        #     bike_data["free_bikes"],
-        #     bike_data["empty_slots"],
-        # )
         bike_stations_status_data_to_insert = list(
             bike_data[["id", "timestamp", "free_bikes", "empty_slots"]].itertuples(
                 index=False, name=None
             )
         )
 
-        # 3. Execute and Commit
         cur.execute(insert_weather_data, weather_data_to_insert)
         psycopg2.extras.execute_values(
             cur, insert_bike_stations, bike_stations_data_to_insert
@@ -124,8 +91,6 @@ def load_data():
         psycopg2.extras.execute_values(
             cur, insert_bike_stations_status, bike_stations_status_data_to_insert
         )
-        # cur.execute(insert_bike_stations, bike_stations_data_to_insert)
-        # cur.execute(insert_bike_stations_status, bike_stations_status_data_to_insert)
         conn.commit()
         print("Data inserted successfully")
 
