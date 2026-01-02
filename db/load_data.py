@@ -20,20 +20,27 @@ def load_data():
         )
         cur = conn.cursor()
 
+        update_batch_id = """
+        INSERT INTO batch DEFAULT VALUES RETURNING id;
+        """
+        cur.execute(update_batch_id)
+        batch_id = cur.fetchone()[0]
+
         insert_weather_data = """
         INSERT INTO weather_data (
-            timestamp,
+            timestamp, batch_id,
             temperature, relative_humidity, 
             apparent_temperature, is_day, 
             surface_pressure, pressure_msl, 
             precipitation, rain, snowfall, 
             wind_speed, showers, cloud_cover, 
             wind_direction
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
 
         insert_bike_stations_status = """
         INSERT INTO bike_stations_status (
+            batch_id,
             station_id,
             timestamp,
             free_bikes,
@@ -55,6 +62,7 @@ def load_data():
         weather_data = get_weather_data()
         weather_data_to_insert = (
             weather_data["time"],
+            batch_id,
             weather_data["temperature"],
             weather_data["humidity"],
             weather_data["apparent_temperature"],
@@ -78,11 +86,12 @@ def load_data():
             )
         )
 
-        bike_stations_status_data_to_insert = list(
-            bike_data[["id", "timestamp", "free_bikes", "empty_slots"]].itertuples(
-                index=False, name=None
-            )
-        )
+        bike_stations_status_data_to_insert = [
+            (batch_id, station_id, timestamp, free_bikes, empty_slots)
+            for station_id, timestamp, free_bikes, empty_slots in bike_data[
+                ["id", "timestamp", "free_bikes", "empty_slots"]
+            ].itertuples(index=False, name=None)
+        ]
 
         cur.execute(insert_weather_data, weather_data_to_insert)
         psycopg2.extras.execute_values(

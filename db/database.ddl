@@ -1,5 +1,10 @@
+CREATE TABLE IF NOT EXISTS batch (
+    id SERIAL PRIMARY KEY
+);
+
 CREATE TABLE IF NOT EXISTS weather_data (
     id SERIAL PRIMARY KEY,
+    batch_id INT REFERENCES batch(id),
     timestamp TIMESTAMP,
     temperature DOUBLE PRECISION,
     relative_humidity INT,
@@ -26,6 +31,7 @@ CREATE TABLE IF NOT EXISTS bike_stations (
 
 CREATE TABLE IF NOT EXISTS bike_stations_status (
     id SERIAL PRIMARY KEY,
+    batch_id INT REFERENCES batch(id),
     timestamp TIMESTAMP,
     station_id VARCHAR(32) REFERENCES bike_stations(id),
     free_bikes INT,
