@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS weather_data (
     showers DOUBLE PRECISION,
     cloud_cover INT,
     wind_speed DOUBLE PRECISION,
-    wind_direction DOUBLE PRECISION
+    wind_direction DOUBLE PRECISION,
+    weather_code INT
 );
 
 CREATE TABLE IF NOT EXISTS bike_stations (

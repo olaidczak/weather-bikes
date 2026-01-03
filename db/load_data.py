@@ -34,8 +34,8 @@ def load_data():
             surface_pressure, pressure_msl, 
             precipitation, rain, snowfall, 
             wind_speed, showers, cloud_cover, 
-            wind_direction
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+            wind_direction, weather_code
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
 
         insert_bike_stations_status = """
@@ -76,6 +76,7 @@ def load_data():
             weather_data["showers"],
             weather_data["cloud_cover"],
             weather_data["wind_direction"],
+            weather_data["weather_code"],
         )
 
         bike_data = get_and_transform_bike_data()

@@ -4,8 +4,6 @@ import requests_cache
 from retry_requests import retry
 from datetime import datetime, timezone
 
-load_dotenv()
-
 
 def get_weather_data():
     cache_session = requests_cache.CachedSession(".cache", expire_after=3600)
@@ -30,6 +28,7 @@ def get_weather_data():
             "showers",
             "cloud_cover",
             "wind_direction_10m",
+            "weather_code",
         ],
         "timezone": "America/New_York",
         "forecast_days": 1,
@@ -56,4 +55,6 @@ def get_weather_data():
     data["showers"] = current.Variables(10).Value()
     data["cloud_cover"] = current.Variables(11).Value()
     data["wind_direction"] = current.Variables(12).Value()
+    data["weather_code"] = current.Variables(13).Value()
+
     return data
