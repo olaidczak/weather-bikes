@@ -1,4 +1,4 @@
-from src.fetch_db.data import get_data
+from src.ui.data import get_data
 from dash import Dash, html
 import dash_ag_grid as dag
 
