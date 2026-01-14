@@ -23,7 +23,7 @@ try:
 
     cur.execute(ddl_script)
     connection.commit()
-    print("Tables created successfully!")
+    print("Tables created successfully")
 
 except Exception as e:
     print(f"Error: {e}")
