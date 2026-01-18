@@ -1,6 +1,8 @@
-from src.ui.data import get_data
 from dash import Dash, html
 import dash_ag_grid as dag
+
+from .data import get_data
+
 
 df = get_data()
 
