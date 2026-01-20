@@ -4,7 +4,7 @@ import psycopg2
 import psycopg2.extras
 from .get_bike_data import get_and_transform_bike_data
 from .get_weather_data import get_weather_data
-from .get_forcast_data import get_forecast_data
+from .get_forecast_data import get_forecast_data
 
 load_dotenv()
 
