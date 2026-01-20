@@ -13,7 +13,8 @@ def get_forecast_data():
         "latitude": 40.7143,
         "longitude": -74.006,
         "hourly": ["temperature_2m", "apparent_temperature", "surface_pressure", "relative_humidity_2m", "rain", "showers", "snowfall", "snow_depth", "weather_code", "wind_speed_10m", "wind_direction_10m", "cloud_cover", "precipitation", "precipitation_probability"],
-        "forecast_days": 2,
+        # "forecast_days": 3,
+        "forecast_hours": 48,
     }
     responses = openmeteo.weather_api(url, params=params)
 
@@ -59,5 +60,6 @@ def get_forecast_data():
     hourly_dataframe = pd.DataFrame(data = hourly_data)
     last = hourly_dataframe.tail(1)
     return last
+    # return hourly_dataframe
 l = get_forecast_data()
 print(l)
