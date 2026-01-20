@@ -4,6 +4,7 @@ import psycopg2
 import psycopg2.extras
 from .get_bike_data import get_and_transform_bike_data
 from .get_weather_data import get_weather_data
+from .get_forcast_data import get_forecast_data
 
 load_dotenv()
 
@@ -59,6 +60,15 @@ def load_data():
         ON CONFLICT (id) DO NOTHING;
         """
 
+        instert_forecast = """
+        INSERT INTO forecast (
+            date, temperature, apparent_temperature,
+            surface_pressure, relative_humidity, rain, showers,
+            snowfall, snow_depth, weather_code, wind_speed,
+            wind_direction, cloud_cover, precipitation, precipitation_probability
+        ) VALUES %s;
+        """
+
         weather_data = get_weather_data()
         weather_data_to_insert = (
             weather_data["time"],
@@ -94,6 +104,29 @@ def load_data():
             ].itertuples(index=False, name=None)
         ]
 
+        forecast_data = get_forecast_data()
+        forecast_data_to_insert = list(
+            forecast_data[
+                [
+                    "date",
+                    "temperature_2m",
+                    "apparent_temperature",
+                    "surface_pressure",
+                    "relative_humidity_2m",
+                    "rain",
+                    "showers",
+                    "snowfall",
+                    "snow_depth",
+                    "weather_code",
+                    "wind_speed_10m",
+                    "wind_direction_10m",
+                    "cloud_cover",
+                    "precipitation",
+                    "precipitation_probability",
+                ]
+            ].itertuples(index=False, name=None)
+        )
+
         cur.execute(insert_weather_data, weather_data_to_insert)
         psycopg2.extras.execute_values(
             cur, insert_bike_stations, bike_stations_data_to_insert
@@ -101,6 +134,8 @@ def load_data():
         psycopg2.extras.execute_values(
             cur, insert_bike_stations_status, bike_stations_status_data_to_insert
         )
+        psycopg2.extras.execute_values(cur, instert_forecast, forecast_data_to_insert)
+
         conn.commit()
         print("Data inserted successfully")
 

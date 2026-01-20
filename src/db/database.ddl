@@ -38,3 +38,22 @@ CREATE TABLE IF NOT EXISTS bike_stations_status (
     free_bikes INT,
     empty_slots INT
 );
+
+CREATE TABLE IF NOT EXISTS forecast (
+    id SERIAL PRIMARY KEY,
+    date TIMESTAMP,
+    temperature DOUBLE PRECISION,
+    apparent_temperature DOUBLE PRECISION,
+    surface_pressure DOUBLE PRECISION,
+    relative_humidity INT,
+    rain DOUBLE PRECISION,
+    showers DOUBLE PRECISION,
+    snowfall DOUBLE PRECISION,
+    snow_depth DOUBLE PRECISION,
+    weather_code INTEGER,
+    wind_speed DOUBLE PRECISION,
+    wind_direction INTEGER,
+    cloud_cover INTEGER,
+    precipitation DOUBLE PRECISION,
+    precipitation_probability INTEGER
+);
