@@ -12,7 +12,7 @@ def get_forecast_data():
     params = {
         "latitude": 40.7143,
         "longitude": -74.006,
-        "hourly": ["temperature_2m", "apparent_temperature", "surface_pressure", "relative_humidity_2m", "rain", "showers", "snowfall", "snow_depth", "weather_code", "wind_speed_10m", "wind_direction_10m", "cloud_cover", "precipitation", "precipitation_probability"],
+        "hourly": ["temperature_2m", "apparent_temperature", "surface_pressure", "relative_humidity_2m", "rain", "showers", "snowfall", "snow_depth", "weather_code", "wind_speed_10m", "wind_direction_10m", "cloud_cover", "precipitation", "precipitation_probability", "is_day"],
         # "forecast_days": 3,
         "forecast_hours": 48,
     }
@@ -58,9 +58,10 @@ def get_forecast_data():
     hourly_data["precipitation"] = hourly_precipitation
     hourly_data["precipitation_probability"] = hourly_precipitation_probability
     hourly_data["is_day"] = hourly_is_day   
-    hourly_data["hour"] = hourly_data["date"].dt.hour
-    hourly_data["day"] = hourly_data["date"].dt.day 
+    hourly_data["hour"] = hourly_data["date"].hour
+    hourly_data["day"] = hourly_data["date"].day 
 
     hourly_dataframe = pd.DataFrame(data = hourly_data)
     last = hourly_dataframe.tail(1)
     return last
+
