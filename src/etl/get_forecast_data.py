@@ -57,7 +57,7 @@ def get_forecast_data():
     hourly_data["cloud_cover"] = hourly_cloud_cover
     hourly_data["precipitation"] = hourly_precipitation
     hourly_data["precipitation_probability"] = hourly_precipitation_probability
-    hourly_data["is_day"] = hourly_is_day   
+    hourly_data["is_day"] = bool(hourly_is_day)   
     hourly_data["hour"] = hourly_data["date"].hour
     hourly_data["day"] = hourly_data["date"].day 
 
