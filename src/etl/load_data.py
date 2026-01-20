@@ -65,7 +65,7 @@ def load_data():
             date, temperature, apparent_temperature,
             surface_pressure, relative_humidity, rain, showers,
             snowfall, snow_depth, weather_code, wind_speed,
-            wind_direction, cloud_cover, precipitation, precipitation_probability
+            wind_direction, cloud_cover, precipitation, precipitation_probability, is_day, hour, day
         ) VALUES %s;
         """
 
@@ -123,6 +123,7 @@ def load_data():
                     "cloud_cover",
                     "precipitation",
                     "precipitation_probability",
+                    "is_day", "hour", "day"
                 ]
             ].itertuples(index=False, name=None)
         )

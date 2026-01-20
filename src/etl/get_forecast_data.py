@@ -34,6 +34,7 @@ def get_forecast_data():
     hourly_cloud_cover = hourly.Variables(11).ValuesAsNumpy()
     hourly_precipitation = hourly.Variables(12).ValuesAsNumpy()
     hourly_precipitation_probability = hourly.Variables(13).ValuesAsNumpy()
+    hourly_is_day = hourly.Variables(14).ValuesAsNumpy()
 
     hourly_data = {"date": pd.date_range(
         start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
@@ -56,10 +57,10 @@ def get_forecast_data():
     hourly_data["cloud_cover"] = hourly_cloud_cover
     hourly_data["precipitation"] = hourly_precipitation
     hourly_data["precipitation_probability"] = hourly_precipitation_probability
+    hourly_data["is_day"] = hourly_is_day   
+    hourly_data["hour"] = hourly_data["date"].dt.hour
+    hourly_data["day"] = hourly_data["date"].dt.day 
 
     hourly_dataframe = pd.DataFrame(data = hourly_data)
     last = hourly_dataframe.tail(1)
     return last
-    # return hourly_dataframe
-l = get_forecast_data()
-print(l)

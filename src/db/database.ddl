@@ -55,5 +55,8 @@ CREATE TABLE IF NOT EXISTS forecast (
     wind_direction DOUBLE PRECISION,
     cloud_cover DOUBLE PRECISION,
     precipitation DOUBLE PRECISION,
-    precipitation_probability DOUBLE PRECISION
+    precipitation_probability DOUBLE PRECISION,
+    is_day BOOLEAN,
+    hour INT,
+    day INT
 );
