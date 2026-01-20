@@ -45,15 +45,15 @@ CREATE TABLE IF NOT EXISTS forecast (
     temperature DOUBLE PRECISION,
     apparent_temperature DOUBLE PRECISION,
     surface_pressure DOUBLE PRECISION,
-    relative_humidity INT,
+    relative_humidity DOUBLE PRECISION,
     rain DOUBLE PRECISION,
     showers DOUBLE PRECISION,
     snowfall DOUBLE PRECISION,
     snow_depth DOUBLE PRECISION,
-    weather_code INTEGER,
+    weather_code DOUBLE PRECISION,
     wind_speed DOUBLE PRECISION,
-    wind_direction INTEGER,
-    cloud_cover INTEGER,
+    wind_direction DOUBLE PRECISION,
+    cloud_cover DOUBLE PRECISION,
     precipitation DOUBLE PRECISION,
-    precipitation_probability INTEGER
+    precipitation_probability DOUBLE PRECISION
 );
