@@ -6,4 +6,4 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 source .venv/bin/activate
 
-python3 -m src.etl.load_data.py
+python3 -m src.etl.load_data
