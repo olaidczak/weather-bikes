@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_data():
+def get_data2():
     connection = psycopg2.connect(
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
@@ -16,7 +16,7 @@ def get_data():
     )
 
     cur = connection.cursor()
-    cur.execute("SELECT * FROM bike_stations_status;")
+    cur.execute("SELECT * FROM weather_data;")
 
     rows = cur.fetchall()
     colnames = [desc[0] for desc in cur.description]
