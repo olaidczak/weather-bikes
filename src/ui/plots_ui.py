@@ -251,9 +251,11 @@ fig_ola.update_layout(
         x=0.01,
         y=0.99
     ),
-    width=1000,
-    height=600
+    autosize=True,
+    height=400,
+    width=700
 )
+
 
 # MAPA
 import pandas as pd
@@ -325,7 +327,13 @@ fig_map.update_layout(
 app = Dash(__name__)
 
 app.layout = html.Div([
-    html.H2("Weather & Bikes Dashboard"),
+    html.H2("Weather & Bikes Dashboard",
+            style={
+        "fontFamily": "Arial, sans-serif",
+        "fontSize": "28px",
+        "fontWeight": "600",
+        "color": "#2c3e50"
+    }),
     html.Div(
         style={"display": "flex", "gap": "20px"},
         children=[
