@@ -1,2 +1,5 @@
 [core]
     analytics = false
+    remote = storage
+['remote "storage"']
+    url = ssh://root@164.92.170.247/home/robot/storage
