@@ -3,15 +3,18 @@ import plotly.express as px
 import plotly.graph_objects as go
 from src.ui.data import get_data
 from src.ui.data_weather import get_data2
+from src.ui.data import get_data3
+
 
 # ===== DANE =====
 bikes_df = get_data()
 weather_df = get_data2()
+stations_df = get_data3()
 
-# 1. Temp in time
+# 1. TEMP IN TIME
 fig_temp = go.Figure()
 
-# Temperature – line (LEFT Y AXIS)
+# Temperature – line
 fig_temp.add_trace(
     go.Scatter(
         x=weather_df["timestamp"],
@@ -46,7 +49,7 @@ fig_temp.add_trace(
     )
 )
 
-# Layout with 2 Y axes
+# layout with 2 y axes
 fig_temp.update_layout(
     title={"text":"Temperature and Rainfall over Time", "x":0.5, "xanchor":"center"},
     xaxis=dict(title="Time",
@@ -69,7 +72,7 @@ fig_temp.update_layout(
     bargap=0,
 )
 
-# 2. Temp vs free bikes
+# 2. TEMP VS BIKES - SCATTER
 merged = bikes_df.merge(
     weather_df,
     on="batch_id",
@@ -116,7 +119,7 @@ fig_bikes_temp.update_layout(
 
 )
 
-# 3. heatmap ?
+# 3. HEATMAP ?
 weather_hm = weather_df.copy()
 weather_hm["date"] = weather_hm["timestamp"].dt.date
 weather_hm["hour"] = weather_hm["timestamp"].dt.hour
@@ -158,7 +161,7 @@ fig_weather_heatmap.update_layout(
 )
 
 
-# 4. Free bikes vs hour
+# 4. FREE BIKES VS HOUR
 merged_hour = merged.copy()
 merged_hour["hour"] = merged_hour["timestamp_x"].dt.hour
 hour_grouped = (
@@ -198,10 +201,9 @@ fig_bikes_hour.update_layout(
     title={"text":"Average Number of Free Bikes by Hour", "x":0.5, "xanchor":"center"},
 )
 
-# ola
+# OLA
 from src.model.data import get_data as get_data_model
 df = get_data_model()
-
 fig_ola = go.Figure()
 
 # Used Bikes (left y-axis)
@@ -226,7 +228,6 @@ fig_ola.add_trace(
     )
 )
 
-
 fig_ola.update_layout(
     title="Used Bikes vs Apparent Temperature",
     plot_bgcolor="white",
@@ -248,32 +249,55 @@ fig_ola.update_layout(
     width=1000,
     height=600
 )
-# mapa
+
+# MAPA
 import pandas as pd
-df = pd.DataFrame({
-    "name": ["Point A", "Point B", "Point C"],
-    "lat": [40.7128, 40.7306, 40.7580],
-    "lon": [-74.0060, -73.9866, -73.9855]
-})
 
-mapa = go.Figure()
+stations_df = stations_df.reset_index(drop=True)
 
-mapa = px.scatter_mapbox(
-    df,
+fig_map = px.scatter_mapbox(
+    stations_df,
     lat="lat",
     lon="lon",
     hover_name="name",
+    hover_data={
+        "slots": True,
+        "lat": False,
+        "lon": False,
+    },
+
     zoom=11,
-    center={"lat": 40.7128, "lon": -74.0060},
-    height=600
+    height=650
 )
 
-mapa.update_layout(
-    mapbox_style="carto-positron",  # clean, no API key needed
-    title="Selected Points in New York City",
-    margin={"r":0,"t":40,"l":0,"b":0}
+fig_map.update_layout(
+    mapbox_style="carto-positron",
+    title={
+        "text": "Bike stations – current availability",
+        "x": 0.5
+    },
+    margin={"r":0, "t":40, "l":0, "b":0}
 )
-# ola 
+
+
+
+# mapa = go.Figure()
+# mapa = px.scatter_mapbox(
+#     df,
+#     lat="lat",
+#     lon="lon",
+#     hover_name="name",
+#     zoom=11,
+#     center={"lat": 40.7128, "lon": -74.0060},
+#     height=600
+# )
+
+# mapa.update_layout(
+#     mapbox_style="carto-positron",  # clean, no API key needed
+#     title="Selected Points in New York City",
+#     margin={"r":0,"t":40,"l":0,"b":0}
+# )
+
 
 # NOT REALLY
 # numeric_cols = [
@@ -309,7 +333,7 @@ app.layout = html.Div([
     html.Div(
         style={"display": "flex", "gap": "20px"},
         children=[
-            html.Div(children=dcc.Graph(figure=mapa)),
+            html.Div(children=dcc.Graph(figure=fig_map)),
             html.Div(children=dcc.Graph(figure=fig_ola)),
         ]
     )

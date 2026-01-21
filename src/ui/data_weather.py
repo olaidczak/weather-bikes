@@ -29,5 +29,9 @@ def get_data2():
 
 
 if __name__ == "__main__":
-    df = get_data()
-    print(df.head())
+    df = get_data2()
+    weather_hm = df.copy()
+    weather_hm["date"] = weather_hm["timestamp"].dt.date
+    weather_hm["hour"] = weather_hm["timestamp"].dt.hour
+    weather_hm.groupby(["date", "hour"]).size().describe()
+    print(weather_hm["temperature"])
