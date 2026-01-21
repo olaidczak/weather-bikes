@@ -198,6 +198,83 @@ fig_bikes_hour.update_layout(
     title={"text":"Average Number of Free Bikes by Hour", "x":0.5, "xanchor":"center"},
 )
 
+# ola
+from src.model.data import get_data as get_data_model
+df = get_data_model()
+
+fig_ola = go.Figure()
+
+# Used Bikes (left y-axis)
+fig_ola.add_trace(
+    go.Scatter(
+        x=df.index,
+        y=df["used_bikes"],
+        name="Used Bikes",
+        mode="lines"
+    )
+)
+
+# Apparent Temperature (right y-axis)
+fig_ola.add_trace(
+    go.Scatter(
+        x=df.index,
+        y=df["apparent_temperature"],
+        name="Apparent Temperature",
+        mode="lines",
+        yaxis="y2",
+        line=dict(color="red")
+    )
+)
+
+
+fig_ola.update_layout(
+    title="Used Bikes vs Apparent Temperature",
+    plot_bgcolor="white",
+    xaxis_title="",
+    yaxis=dict(
+        title="Used Bikes",
+        showgrid =True,
+        gridcolor="rgba(0,0,0,0.08)"
+    ),
+    yaxis2=dict(
+        title="Temperature",
+        overlaying="y",
+        side="right"
+    ),
+    legend=dict(
+        x=0.01,
+        y=0.99
+    ),
+    width=1000,
+    height=600
+)
+# mapa
+import pandas as pd
+df = pd.DataFrame({
+    "name": ["Point A", "Point B", "Point C"],
+    "lat": [40.7128, 40.7306, 40.7580],
+    "lon": [-74.0060, -73.9866, -73.9855]
+})
+
+mapa = go.Figure()
+
+mapa = px.scatter_mapbox(
+    df,
+    lat="lat",
+    lon="lon",
+    hover_name="name",
+    zoom=11,
+    center={"lat": 40.7128, "lon": -74.0060},
+    height=600
+)
+
+mapa.update_layout(
+    mapbox_style="carto-positron",  # clean, no API key needed
+    title="Selected Points in New York City",
+    margin={"r":0,"t":40,"l":0,"b":0}
+)
+# ola 
+
 # NOT REALLY
 # numeric_cols = [
 #     'temperature', 'relative_humidity', 'apparent_temperature', 
@@ -212,6 +289,8 @@ fig_bikes_hour.update_layout(
 #     color_continuous_scale='Viridis',
 #     title="Heatmapa korelacji parametrów pogodowych"
 # )
+
+
 
 # ===== APP =====
 app = Dash(__name__)
@@ -230,11 +309,11 @@ app.layout = html.Div([
     html.Div(
         style={"display": "flex", "gap": "20px"},
         children=[
-            html.Div(children=dcc.Graph(figure=fig_bikes_temp)),
-            html.Div(children=dcc.Graph(figure=fig_bikes_hour)),
+            html.Div(children=dcc.Graph(figure=mapa)),
+            html.Div(children=dcc.Graph(figure=fig_ola)),
         ]
     )
 ])
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=8050)
