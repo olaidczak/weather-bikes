@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from src.ui.data import get_data
 from src.ui.data_weather import get_data2
 from src.ui.data import get_data3
-
+from src.model.data import get_data as get_data_model
 
 # ===== DANE =====
 bikes_df = get_data()
@@ -202,16 +202,21 @@ fig_bikes_hour.update_layout(
 )
 
 # OLA
-from src.model.data import get_data as get_data_model
+# change time to ny time
 df = get_data_model()
+df["timestamp_ny"] = (
+    df["timestamp"]
+    .dt.tz_localize("UTC")         
+    .dt.tz_convert("America/New_York")
+)
 fig_ola = go.Figure()
 
 # Used Bikes (left y-axis)
 fig_ola.add_trace(
     go.Scatter(
-        x=df.index,
+        x=df['timestamp_ny'],
         y=df["used_bikes"],
-        name="Used Bikes",
+        name="Percentage of Used Bikes",
         mode="lines"
     )
 )
@@ -219,7 +224,7 @@ fig_ola.add_trace(
 # Apparent Temperature (right y-axis)
 fig_ola.add_trace(
     go.Scatter(
-        x=df.index,
+        x=df['timestamp_ny'],
         y=df["apparent_temperature"],
         name="Apparent Temperature",
         mode="lines",
