@@ -1,10 +1,31 @@
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, dash_table
 import plotly.express as px
 import plotly.graph_objects as go
 from src.ui.data import get_data
 from src.ui.data_weather import get_data2
 from src.ui.data import get_data3
 from src.model.data import get_data as get_data_model
+import pandas as pd
+
+GLOBAL_FIG_STYLE = dict(
+    font=dict(
+        family="Arial",
+        size=18,          # 🔥 ogólny tekst (ticki, legendy)
+        color="#2c3e50"
+    ),
+    legend=dict(
+        font=dict(size=18),
+        title_font=dict(size=20)
+    ),
+    xaxis=dict(
+        title_font=dict(size=22),
+        tickfont=dict(size=18)
+    ),
+    yaxis=dict(
+        title_font=dict(size=22),
+        tickfont=dict(size=18)
+    )
+)
 
 # ===== DANE =====
 bikes_df = get_data()
@@ -22,7 +43,6 @@ fig_temp.add_trace(
         name="Temperature [°C]",
         mode="lines",
         line=dict(color="blue"),
-        yaxis="y1",
         hovertemplate=(
             "<b>Temperature</b><br>"
             "Time: %{x}<br>"
@@ -51,7 +71,6 @@ fig_temp.add_trace(
 
 # layout with 2 y axes
 fig_temp.update_layout(
-    title={"text":"Temperature and Rainfall over Time", "x":0.5, "xanchor":"center"},
     xaxis=dict(title="Time",
                        showgrid=True,
         gridcolor="rgba(0,0,0,0.08)"),
@@ -63,9 +82,15 @@ fig_temp.update_layout(
     ),
     yaxis2=dict(
         title="Rain [mm]",
-        side="right",
-        overlaying="y",
-        showgrid =False
+        title_font=dict(size=22),
+        tickfont=dict(size=18),
+        overlaying="y", 
+    ),
+    title=dict(
+        text= "Temperature and rainfall over time",
+        font=dict(size=40, family="Arial", color="#2c3e50"),
+        x=0.5,
+        xanchor='center'
     ),
     plot_bgcolor="white",
     legend=dict(x=0.01, y=0.99),
@@ -209,6 +234,7 @@ df["timestamp_ny"] = (
     .dt.tz_localize("UTC")         
     .dt.tz_convert("America/New_York")
 )
+df["hour"] = df["timestamp_ny"].dt.hour
 fig_ola = go.Figure()
 
 # Used Bikes (left y-axis)
@@ -234,7 +260,6 @@ fig_ola.add_trace(
 )
 
 fig_ola.update_layout(
-    title="Used Bikes vs Apparent Temperature",
     plot_bgcolor="white",
     xaxis_title="",
     yaxis=dict(
@@ -245,17 +270,56 @@ fig_ola.update_layout(
     yaxis2=dict(
         title="Temperature",
         overlaying="y",
-        side="right"
+        side="right",
+        title_font=dict(size=22),
+        tickfont=dict(size=18)
     ),
     legend=dict(
         x=0.01,
         y=0.99
     ),
-    autosize=True,
-    height=400,
-    width=700
+    title=dict(
+        text="Used bikes depending on apparent temperature",
+        x= 0.5,
+        font=dict(size=40, family="Arial", color="#2c3e50"),
+    )
 )
 
+
+# TRY --------------------------------------------------------------------------
+
+merged_grouped["temp_bin"] = pd.cut(
+    merged_grouped["temperature"], bins=10
+).astype(str)
+
+
+fig_fig = px.box(
+    merged_grouped,
+    x="temp_bin",
+    y="free_bikes",
+    labels={
+        "temp_bin": "Mean temperature [°C]",
+        "free_bikes": "Total free bikes per batch"
+    },
+)
+
+fig_fig.update_traces(
+    boxmean=True,
+    hovertemplate=
+        "Temp bin: %{x}<br>" +
+        "Min: %{lowerfence}<br>" +
+        "Mean: %{mean}<br>" +
+        "Max: %{upperfence}<extra></extra>"
+)
+
+fig_fig.update_layout(
+    title=dict(
+        text="Free Bikes distribution depending on temperature",
+        font=dict(size=40, family="Arial", color="#2c3e50"),
+        x=0.5,
+        xanchor='center'
+    )
+)
 
 # MAPA
 import pandas as pd
@@ -266,23 +330,28 @@ fig_map = px.scatter_mapbox(
     stations_df,
     lat="lat",
     lon="lon",
-    hover_name="name",
-    hover_data={
-        "slots": True,
-        "lat": False,
-        "lon": False,
-    },
-
     zoom=11,
-    height=650
+    height=450
 )
+
+fig_map.update_traces(
+    hovertemplate=(
+        "<b>%{customdata[0]}</b><br>"
+        "Slots: %{customdata[1]}"
+        "<extra></extra>"
+    ),
+    customdata=stations_df[["name", "slots"]].values
+)
+
 
 fig_map.update_layout(
     mapbox_style="carto-positron",
-    title={
-        "text": "Bike stations – current availability",
-        "x": 0.5
-    },
+    title=dict(
+        text= "Bike stations and possible bikes spots",
+        font=dict(size=40, family="Arial", color="#2c3e50"),
+        x=0.5,
+        xanchor='center'
+),
     margin={"r":0, "t":40, "l":0, "b":0}
 )
 
@@ -321,36 +390,135 @@ fig_map.update_layout(
 #     title="Heatmapa korelacji parametrów pogodowych"
 # )
 
-
+# TABELKA
+from src.model.data import get_forecast_data
+from src.model.model_predict import predict
+forecast_df = get_forecast_data()
+forecast_df["predicted_used_bikes"] = predict(forecast_df)
 
 # ===== APP =====
+PAGE_STYLE = {
+    "maxWidth": "4000px",
+    "margin": "0 auto",
+    "padding": "20px 30px",
+    "backgroundColor": "#f7f9fb"
+}
+
+
+ROW_STYLE = {
+    "display": "grid",
+    "gridTemplateColumns": "1fr 1fr",
+    "gap": "20px",
+    "marginBottom": "20px"
+}
+
+CARD_STYLE = {
+    "backgroundColor": "white",
+    "borderRadius": "10px",
+    "boxShadow": "0 4px 12px rgba(0,0,0,0.08)",
+    "padding": "12px"
+}
+
+STANDARD_HEIGHT = 1000
+MAP_HEIGHT = 1100
+
+fig_temp.update_layout(height=STANDARD_HEIGHT)
+fig_fig.update_layout(height=STANDARD_HEIGHT)
+fig_ola.update_layout(height=STANDARD_HEIGHT)
+fig_map.update_layout(height=MAP_HEIGHT)
+
+for fig in [fig_temp, fig_fig, fig_ola, fig_map ]:
+    fig.update_layout(
+        margin=dict(l=40, r=30, t=120, b=40),
+        plot_bgcolor="white"
+    )
+
+for fig in [fig_temp, fig_fig, fig_ola, fig_map, fig_bikes_temp, fig_weather_heatmap, fig_bikes_hour]:
+    fig.update_layout(**GLOBAL_FIG_STYLE)
+
+
 app = Dash(__name__)
 
-app.layout = html.Div([
-    html.H2("Weather & Bikes Dashboard",
-            style={
-        "fontFamily": "Arial, sans-serif",
-        "fontSize": "28px",
-        "fontWeight": "600",
-        "color": "#2c3e50"
-    }),
-    html.Div(
-        style={"display": "flex", "gap": "20px"},
-        children=[
-            html.Div(children=dcc.Graph(figure=fig_temp)),
-            html.Div(children=dcc.Graph(figure=fig_weather_heatmap)),
-        ]
-    ),
+app.layout = html.Div(
+    style=PAGE_STYLE,
+    children=[
+        html.H2(
+            "Weather & Bikes Dashboard",
+        style={
+            "fontFamily": "Arial, sans-serif",
+            "fontSize": "40px",  # większy
+            "fontWeight": "700", # grubszy
+            "color": "#2c3e50",
+            "marginBottom": "30px",
+            "textAlign": "center"  # wyśrodkowanie
+        }
+        ),
 
-    # ROW 2
-    html.Div(
-        style={"display": "flex", "gap": "20px"},
-        children=[
-            html.Div(children=dcc.Graph(figure=fig_map)),
-            html.Div(children=dcc.Graph(figure=fig_ola)),
-        ]
-    )
-])
+        # ===== ROW 1 =====
+        html.Div(
+            style=ROW_STYLE,
+            children=[
+                html.Div(dcc.Graph(figure=fig_temp), style=CARD_STYLE),
+                html.Div(dcc.Graph(figure=fig_fig), style=CARD_STYLE),
+            ]
+        ),
+
+        # ===== ROW 2 =====
+        html.Div(
+            style=ROW_STYLE,
+            children=[
+                html.Div(dcc.Graph(figure=fig_map), style=CARD_STYLE),
+                html.Div(dcc.Graph(figure=fig_ola), style=CARD_STYLE),
+            ]
+        ),
+
+        # ===== TABLE SECTION =====
+        html.Div(
+            style={
+                **CARD_STYLE,
+            },
+            children=[
+                html.H4(
+                    "Bike Usage Forecast",
+                    style={
+                        "marginBottom": "20px",
+                        "color": "#2c3e50",
+                        "fontSize": "32px",
+                        "textAlign": "center",
+                        "fontFamily": "Arial",
+                        "fontWeight": "normal",
+                        }
+                    ),
+                dash_table.DataTable(
+                    id="forecast-table",
+                    columns=[
+                        {"name": col.replace("_", " ").title(), "id": col}
+                        for col in forecast_df.columns
+                    ],
+                    data=forecast_df.round(2).to_dict("records"),
+                    page_size=10,
+                    style_table={"overflowX": "auto"},
+                    style_cell={
+                        "textAlign": "center",
+                        "padding": "8px",
+                        "fontFamily": "Arial"
+                    },
+                    style_header={
+                        "backgroundColor": "#ecf0f1",
+                        "fontWeight": "600"
+                    },
+                    style_data_conditional=[
+                        {
+                            "if": {"row_index": "odd"},
+                            "backgroundColor": "#fafafa"
+                        }
+                    ]
+                )
+            ]
+        )
+    ]
+)
+
 
 if __name__ == "__main__":
     app.run(debug=True,port=8050)
