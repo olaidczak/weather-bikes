@@ -455,7 +455,7 @@ for fig in [fig_temp, fig_fig, fig_ola, fig_map, fig_bikes_temp, fig_weather_hea
 
 
 app = Dash(__name__)
-
+##
 app.layout = html.Div(
     style=PAGE_STYLE,
     children=[
