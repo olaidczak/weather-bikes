@@ -10,7 +10,7 @@ import pandas as pd
 GLOBAL_FIG_STYLE = dict(
     font=dict(
         family="Arial",
-        size=18,          # 🔥 ogólny tekst (ticki, legendy)
+        size=18,
         color="#2c3e50"
     ),
     legend=dict(
@@ -57,7 +57,6 @@ fig_temp.add_trace(
     go.Bar(
         x=weather_df["timestamp"],
         y=weather_df["rain"],
-        name="Rain [mm]",
         yaxis="y2",
         opacity=0.5,
         hovertemplate=(
@@ -80,12 +79,15 @@ fig_temp.update_layout(
         showgrid=True,
         gridcolor="rgba(0,0,0,0.08)"
     ),
-    yaxis2=dict(
-        title="Rain [mm]",
-        title_font=dict(size=22),
-        tickfont=dict(size=18),
-        overlaying="y", 
-    ),
+yaxis2=dict(
+    title="Rain [mm]",
+    side="right",
+    overlaying="y",
+    showgrid=False,
+    title_font=dict(size=22),
+    tickfont=dict(size=18)
+)
+,
     title=dict(
         text= "Temperature and rainfall over time",
         font=dict(size=40, family="Arial", color="#2c3e50"),
