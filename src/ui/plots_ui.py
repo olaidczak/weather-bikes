@@ -485,8 +485,7 @@ app.layout = html.Div(
                         "color": "#2c3e50",
                         "fontSize": "32px",
                         "textAlign": "center",
-                        "fontFamily": "Arial",
-                        "fontWeight": "normal",
+                        "fontFamily": "Arial"
                         }
                     ),
                 dash_table.DataTable(
