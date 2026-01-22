@@ -31,9 +31,9 @@ A dashboard that analyzes and predicts bike availability based on weather condit
 - Handles feature engineering and data preparation
 
 **UI (src/ui/)**
-- Dash-based interactive web dashboard
+- Interactive web dashboard
 - Plotly visualizations for data exploration
-- Real-time model predictions with user controls
+- Model predictions 
 - Data integration from ETL pipelines
 
 ## Tech Stack
