@@ -275,7 +275,7 @@ fig_ola.add_trace(
 
 fig_ola.update_layout(
     plot_bgcolor="white",
-    xaxis_title="",
+    xaxis_title="Time",
     yaxis=dict(
         title="Used Bikes",
         showgrid =True,
@@ -303,7 +303,7 @@ fig_ola.update_layout(
 # TRY --------------------------------------------------------------------------
 
 merged_grouped["temp_bin"] = pd.cut(
-    merged_grouped["temperature"], bins=5
+    merged_grouped["temperature"], bins=10
 ).astype(str)
 
 
@@ -332,7 +332,11 @@ fig_fig.update_layout(
         font=dict(size=40, family="Arial", color="#2c3e50"),
         x=0.5,
         xanchor='center'
-    )
+    ),
+    xaxis=dict(showgrid=True,
+               gridcolor="rgba(0,0,0,0.08)"),
+    yaxis=dict(showgrid=True,
+               gridcolor="rgba(0,0,0,0.08)"),
 )
 
 # MAPA
