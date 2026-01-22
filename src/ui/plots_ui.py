@@ -68,14 +68,15 @@ fig_temp.add_trace(
 # Rain – bars
 fig_temp.add_trace(
     go.Bar(
-        x=weather_df["timestamp"],
-        y=weather_df["rain"],
+        x=weather_df["timestamp_ny"],
+        y=weather_df["precipitation"],
         yaxis="y2",
+        name="Precipitation [mm]", 
         opacity=0.5,
         hovertemplate=(
-            "<b>Rain</b><br>"
+            "<b>Precipitation</b><br>"
             "Time: %{x}<br>"
-            "Rain: %{y:.2f} mm"
+            "Precipitation: %{y:.2f} mm"
             "<extra></extra>"
         )
     )
@@ -93,7 +94,7 @@ fig_temp.update_layout(
         gridcolor="rgba(0,0,0,0.08)"
     ),
     yaxis2=dict(
-        title="Rain [mm]",
+        title="Precipitation [mm]",
         side="right",
         overlaying="y",
         showgrid=False,
@@ -101,7 +102,7 @@ fig_temp.update_layout(
         tickfont=dict(size=18)
     ),
     title=dict(
-        text= "Temperature and rainfall over time",
+        text= "Temperature and precipitation over time",
         font=dict(size=40, family="Arial", color="#2c3e50"),
         x=0.5,
         xanchor='center'
@@ -293,7 +294,7 @@ fig_ola.update_layout(
         y=0.99
     ),
     title=dict(
-        text="Used bikes depending on apparent temperature",
+        text="Percentage of bikes used and apparent temperature",
         x= 0.5,
         font=dict(size=40, family="Arial", color="#2c3e50"),
     )
@@ -312,7 +313,7 @@ fig_fig = px.box(
     x="temp_bin",
     y="free_bikes",
     labels={
-        "temp_bin": "Mean temperature [°C]",
+        "temp_bin": "Temperature [°C]",
         "free_bikes": "Total free bikes"
     },
 )
