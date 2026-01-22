@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY src src
 
-CMD ["python", "-m", "src.ui.test_ui"]
+CMD ["python", "-m", "src.ui.plots_ui"]
