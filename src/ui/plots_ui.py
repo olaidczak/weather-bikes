@@ -24,7 +24,13 @@ GLOBAL_FIG_STYLE = dict(
     yaxis=dict(
         title_font=dict(size=22),
         tickfont=dict(size=18)
+    ),
+    title=dict(
+        font=dict(size=28, family="Arial", color="#2c3e50"),
+        x=0.5,
+        xanchor='center'
     )
+
 )
 
 # ===== DANE =====
@@ -32,13 +38,20 @@ bikes_df = get_data()
 weather_df = get_data2()
 stations_df = get_data3()
 
+weather_df["timestamp_ny"] = (
+    weather_df["timestamp"]
+    .dt.tz_localize("UTC")         
+    .dt.tz_convert("America/New_York")
+)
+
+
 # 1. TEMP IN TIME
 fig_temp = go.Figure()
 
 # Temperature – line
 fig_temp.add_trace(
     go.Scatter(
-        x=weather_df["timestamp"],
+        x=weather_df["timestamp_ny"],
         y=weather_df["temperature"],
         name="Temperature [°C]",
         mode="lines",
@@ -79,15 +92,14 @@ fig_temp.update_layout(
         showgrid=True,
         gridcolor="rgba(0,0,0,0.08)"
     ),
-yaxis2=dict(
-    title="Rain [mm]",
-    side="right",
-    overlaying="y",
-    showgrid=False,
-    title_font=dict(size=22),
-    tickfont=dict(size=18)
-)
-,
+    yaxis2=dict(
+        title="Rain [mm]",
+        side="right",
+        overlaying="y",
+        showgrid=False,
+        title_font=dict(size=22),
+        tickfont=dict(size=18)
+    ),
     title=dict(
         text= "Temperature and rainfall over time",
         font=dict(size=40, family="Arial", color="#2c3e50"),
@@ -173,7 +185,7 @@ fig_weather_heatmap = px.density_heatmap(
     }
 )
 fig_weather_heatmap.update_coloraxes(
-    colorbar_title="Mean temperature [°C]"
+    colorbar_title="Temperature [°C]"
 )
 fig_weather_heatmap.update_traces(
     hovertemplate=(
@@ -270,7 +282,7 @@ fig_ola.update_layout(
         gridcolor="rgba(0,0,0,0.08)"
     ),
     yaxis2=dict(
-        title="Temperature",
+        title="Temperature [°C]",
         overlaying="y",
         side="right",
         title_font=dict(size=22),
@@ -291,7 +303,7 @@ fig_ola.update_layout(
 # TRY --------------------------------------------------------------------------
 
 merged_grouped["temp_bin"] = pd.cut(
-    merged_grouped["temperature"], bins=10
+    merged_grouped["temperature"], bins=5
 ).astype(str)
 
 
@@ -324,8 +336,6 @@ fig_fig.update_layout(
 )
 
 # MAPA
-import pandas as pd
-
 stations_df = stations_df.reset_index(drop=True)
 
 fig_map = px.scatter_mapbox(
@@ -421,8 +431,8 @@ CARD_STYLE = {
     "padding": "12px"
 }
 
-STANDARD_HEIGHT = 1000
-MAP_HEIGHT = 1100
+STANDARD_HEIGHT = 500
+MAP_HEIGHT = 600
 
 fig_temp.update_layout(height=STANDARD_HEIGHT)
 fig_fig.update_layout(height=STANDARD_HEIGHT)
@@ -485,7 +495,7 @@ app.layout = html.Div(
                     style={
                         "marginBottom": "20px",
                         "color": "#2c3e50",
-                        "fontSize": "32px",
+                        "fontSize": "28px",
                         "textAlign": "center",
                         "fontFamily": "Arial"
                         }
