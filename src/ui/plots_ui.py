@@ -313,7 +313,7 @@ fig_fig = px.box(
     y="free_bikes",
     labels={
         "temp_bin": "Mean temperature [°C]",
-        "free_bikes": "Total free bikes per batch"
+        "free_bikes": "Total free bikes"
     },
 )
 
