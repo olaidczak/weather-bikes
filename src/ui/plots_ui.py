@@ -304,7 +304,7 @@ fig_ola.update_layout(
 # TRY --------------------------------------------------------------------------
 
 merged_grouped["temp_bin"] = pd.cut(
-    merged_grouped["temperature"], bins=10
+    merged_grouped["temperature"], bins=5
 ).astype(str)
 
 
