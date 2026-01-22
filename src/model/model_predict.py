@@ -1,7 +1,7 @@
 import pickle
 
 def predict(data):
-    with open("model.pkl", "rb") as f:
+    with open("src/model/model.pkl", "rb") as f:
         model = pickle.load(f)
     
     data = data[['temperature', 'relative_humidity', 'is_day', 'surface_pressure',
