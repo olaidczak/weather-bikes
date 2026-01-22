@@ -17,7 +17,7 @@ A dashboard that analyzes and predicts bike availability based on weather condit
 - Scripts for Docker setup
 
 **ETL (src/etl/)**
-- Handles data collection from external APIs (Citi Bikes, Open-Meteo)
+- Handles data collection from external APIs (Citi Bikes, Open Meteo)
 - Transforms raw data into structured formats
 - Loads data into database
 
@@ -40,8 +40,8 @@ A dashboard that analyzes and predicts bike availability based on weather condit
 
 - **Language**: Python 3.11
 - **Machine Learning**: Scikit-learn
-- **Data Processing**: Pandas, NumPy, Dash
-- **Visualization**: Plotly,
+- **Data Processing**: Pandas
+- **Visualization**: Dash, Plotly
 - **Data APIs**: Open-Meteo (weather), CityBikes (bike data)
 - **Data Versioning**: DVC (Data Version Control)
 - **Database**: PostgreSQL (psycopg2)
@@ -66,7 +66,7 @@ git clone <repository-url>
 
 ```bash
 python3 -m venv .venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
 ### 3. Install Needed Packages
